@@ -68,6 +68,7 @@ if [[ $logdir != *"MagicMirror/installers"* ]]; then
 	fi
 fi
 logfile=$logdir/install.log
+aptgetlogfile=$logdir/apt-get.log
 echo install log being saved to $logfile
 
 # Determine which Pi is running.
@@ -99,14 +100,15 @@ function verlt() { [ "$1" = "$2" ] && return 1 || verlte $1 $2 ;}
 # Update before first apt-get
 if [ $mac != 'Darwin' ]; then
 	echo -e "\e[96mUpdating packages ...\e[90m" | tee -a $logfile
+	echo apt-get log being saved to $aptgetlogile
 	upgrade=$false
-	update=$(sudo apt-get update 2>&1)
+	update=$(sudo apt-get update > $aptgetlogfile 2>&1)
 	echo $update >> $logfile
 	update_rc=$?
 	if [ $update_rc -ne 0 ]; then
 	 echo -e "\e[91mUpdate failed, retrying installation ...\e[90m" | tee -a $logfile
 	 if [ $(echo $update | grep "apt-secure" | wc -l) -eq 1 ]; then
-			update=$(sudo apt-get update --allow-releaseinfo-change 2>&1)
+			update=$(sudo apt-get update --allow-releaseinfo-change > $aptgetlogfile 2>&1)
 			update_rc=$?
 			echo $update >> $logfile
 			if [ $update_rc -ne 0 ]; then
@@ -122,7 +124,7 @@ if [ $mac != 'Darwin' ]; then
 		upgrade=$true
 	fi
 	if [ $upgrade -eq $true ]; then
-	   upgrade_result=$(sudo apt-get upgrade 2>&1)
+	   upgrade_result=$(sudo apt-get upgrade > $aptgetlogfile 2>&1)
 		 upgrade_rc=$?
 		 echo apt upgrade result ="rc=$upgrade_rc $upgrade_result" >> $logfile
 	fi
