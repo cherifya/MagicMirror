@@ -100,7 +100,7 @@ function verlt() { [ "$1" = "$2" ] && return 1 || verlte $1 $2 ;}
 # Update before first apt-get
 if [ $mac != 'Darwin' ]; then
 	echo -e "\e[96mUpdating packages ...\e[90m" | tee -a $logfile
-	echo "apt-get log being saved to $aptgetlogile"
+	echo "apt-get log being saved to $aptgetlogfile"
 	upgrade=$false
 	update=$(sudo apt-get update > $aptgetlogfile 2>&1)
 	echo $update >> $logfile
